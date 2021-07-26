@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
                   cv::CAP_GSTREAMER,
                   cv::VideoWriter::fourcc('m', 'p', '4', 'v'),
                   cap.get(cv::CAP_PROP_FPS),
-                  cv::Size(MODEL_RES, MODEL_RES),
+                  cv::Size(framewidth, frameheight),
                   true);
 
   if(!out.isOpened()){
@@ -134,7 +134,7 @@ int main(int argc, char* argv[]) {
     fpsString << fps;
 
     cv::putText(img, "FPS: " + fpsString.str(),
-                 cv::Point(10, 30), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(255, 0, 0), 2);
+                 cv::Point(10, 30), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
 
     // Clear the content of sstream
     fpsString.str(std::string());
@@ -146,7 +146,9 @@ int main(int argc, char* argv[]) {
     // Convert back to BGR since OpenCV works with BGR
     cv::cvtColor(img, outMat, cv::COLOR_RGB2BGR);
 
-    out << img;
+    cv::resize(outMat, outMat, cv::Size(framewidth, frameheight), 0, 0, cv::INTER_CUBIC);
+
+    out << outMat;
 
     cv::imwrite("out.jpg", outMat);
 
