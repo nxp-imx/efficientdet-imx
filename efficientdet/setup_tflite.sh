@@ -6,7 +6,7 @@
 cd checkpoints
 
 # Download models
-# Standard and regular models have slightly different download paths
+# Standard and lite models have slightly different download paths
 
 if [[ ${1} == *"lite"* ]]; then
 	wget https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco/efficientdet-${1}.tgz

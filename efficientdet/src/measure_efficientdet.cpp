@@ -150,8 +150,6 @@ int main(int argc, char* argv[]) {
 
     out << outMat;
 
-    cv::imwrite("out.jpg", outMat);
-
     std::cout << "Frames processed: " << imgCnt++ << " / " << framecount << std::endl;
   }
 
