@@ -21,7 +21,7 @@ LIBS=-ltensorflowlite \
 	-lopencv_videoio \
 	-lopencv_video
 
-BIN=measure
+BIN=efficientdet_demo
 
 EXT=../../../tensorflow/tensorflow/lite/nnapi/nnapi_implementation.cc
 
@@ -31,8 +31,8 @@ UTILS=efficientdet_utils
 
 all: efficientdet
 
-efficientdet: $(BIN)_efficientdet.cpp $(UTILS).cpp $(UTILS).hpp
-	$(CXX) -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN)_efficientdet.cpp $(LDOPTS) $(LIBS) -o $(BIN)_efficientdet
+efficientdet: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
+	$(CXX) -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -o $(BIN)
 
 clean:
 	rm measure_efficientdet
