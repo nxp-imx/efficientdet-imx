@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
   std::cout << "==============================" << std::endl << std::endl;
   
   // Prepare output file
-  // Output file will have the resolution that the model works on
+  // Output file will have the same resolution as input file
   // Output format is avi because mp4 is not supported
   cv::VideoWriter  out("out.avi",
                   cv::CAP_GSTREAMER,
