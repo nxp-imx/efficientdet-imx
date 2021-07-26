@@ -29,9 +29,10 @@ LDOPTS:=-L./libs
 
 UTILS=efficientdet_utils
 
+all: efficientdet
+
 efficientdet: $(BIN)_efficientdet.cpp $(UTILS).cpp $(UTILS).hpp
 	$(CXX) -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN)_efficientdet.cpp $(LDOPTS) $(LIBS) -o $(BIN)_efficientdet
 
-mobilenet: $(BIN)_mobilenet.cpp $(UTILS).cpp $(UTILS).hpp
-	$(CXX) -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN)_mobilenet.cpp $(LDOPTS) $(LIBS) -o $(BIN)_mobilenet
-
+clean:
+	rm measure_efficientdet
