@@ -11,7 +11,7 @@
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
-#include "utils.hpp"
+#include "efficientdet_utils.hpp"
 
 int main(int argc, char* argv[]) {
   if (argc != 4) {

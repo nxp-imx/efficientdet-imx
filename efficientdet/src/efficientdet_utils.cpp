@@ -5,7 +5,7 @@
 #include <regex>
 #include <fstream>
 #include <unistd.h>
-#include "utils.hpp"
+#include "efficientdet_utils.hpp"
 #include "opencv2/opencv.hpp"
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/register.h"
@@ -33,48 +33,6 @@ cv::Mat readImage(const std::string& imgPath, const int width, const int height)
   cv::resize(RGBImg, resizedImg, cv::Size(width, height), 0, 0, cv::INTER_CUBIC);
 
   return resizedImg;
-}
-
-// Read memory statistics from /proc/self/smaps_rollup
-void logMemoryUsage(std::ofstream& stream)
-{
-  std::ifstream memInfo("/proc/self/smaps_rollup");
-  std::string line;
-
-  while(std::getline(memInfo, line)){
-    log<std::string>(stream, line);
-  }
-
-  stream << std::endl;
-
-  memInfo.close();
-}
-
-// Build the output log filename for further manipulation
-std::string createLogFileName(const std::string& model,const std::string& time)
-{
-  std::string modelCopy(model);
-  std::string timeCopy(time);
-
-  std::string prep        = modelCopy.append(timeCopy);
-  std::string prep2       = std::regex_replace(prep,  std::regex("\\.tflite"), "-");
-  std::string prep3       = std::regex_replace(prep2, std::regex("--"), "-");
-  std::string prep4       = prep3.substr(0, prep3.size() - 1);
-  std::string logFileName = prep4.append(".txt");
-
-  return logFileName; 
-}
-
-// Return current time in a string format
-std::string getTime()
-{
-  std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-  std::string res(std::ctime(&time));
-
-  // Replace all spaces by '-'
-  std::replace(res.begin(), res.end(), ' ', '-');
-
-  return res;
 }
 
 // Performs a single inference with time measurement. returns the duration

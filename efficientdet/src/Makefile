@@ -27,7 +27,7 @@ EXT=../../../tensorflow/tensorflow/lite/nnapi/nnapi_implementation.cc
 
 LDOPTS:=-L./libs
 
-UTILS=utils
+UTILS=efficientdet_utils
 
 efficientdet: $(BIN)_efficientdet.cpp $(UTILS).cpp $(UTILS).hpp
 	$(CXX) -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN)_efficientdet.cpp $(LDOPTS) $(LIBS) -o $(BIN)_efficientdet
