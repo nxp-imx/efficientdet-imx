@@ -3,7 +3,6 @@
 
 # Script expects argument which version of efficientDet to download (ie "d0") and an optimization string, ie "INT8", "FP16", etc...
 
-
 cd checkpoints
 
 # Download models
@@ -30,22 +29,34 @@ if [[ ! -d models/efficientdet-${1} ]]; then
 	mkdir models/efficientdet-${1}
 fi
 
-if [[ ${2} == "INT8" ]]; then
-	SUFFIX=int8
+# If no optimization provided as second argument (INT8, FP16, ...) use default conversion.
+# Optimized conversions use keras implementation of EfficientDet
+if [ -z ${2} ]; then
+	python3 ../automl/efficientdet/model_inspect.py --runmode=saved_model --model_name=efficientdet-${1} \
+	  --ckpt_path=checkpoints/efficientdet-${1} --saved_model_dir=checkpoints/efficientdet-${1}/saved_model \
+	  --min_score_thresh=0.0 \
+	  --tflite_path=models/efficientdet-${1}/efficientdet-${1}.tflite
+else
+	if [[ ${2} == "INT8" ]]; then
+		SUFFIX=int8
+	fi
+
+	if [[ ${2} == "FP16" ]]; then
+		SUFFIX=fp16
+	fi
+
+	if [[ ${2} == "FP32" ]]; then
+		SUFFIX=fp32
+	fi
+
+	cd ../automl/efficientdet
+
+	python3 -m keras.inspector --mode=export --model_name=efficientdet-${1} \
+	  	  --saved_model_dir=../../efficientdet/checkpoints/efficientdet-${1}/saved_model \
+	  	  --tflite=${2}
+
+	cp ../../efficientdet/checkpoints/efficientdet-${1}/saved_model/${SUFFIX}.tflite ../../efficientdet/models/efficientdet-${1}/efficientdet-${1}-${SUFFIX}.tflite
 fi
 
-if [[ ${2} == "FP16" ]]; then
-	SUFFIX=fp16
-fi
-
-if [[ ${2} == "FP32" ]]; then
-	SUFFIX=fp32
-fi
-
-cd ../automl/efficientdet
-
-python3 -m keras.inspector --mode=export --model_name=efficientdet-${1} \
-  	  --saved_model_dir=../../efficientdet/checkpoints/efficientdet-${1}/saved_model \
-  	  --tflite=${2}
-
-cp ../../efficientdet/checkpoints/efficientdet-${1}/saved_model/${SUFFIX}.tflite ../../efficientdet/models/efficientdet-${1}/efficientdet-${1}-${SUFFIX}.tflite
+echo "You can find the converted model in 'models' directory."
+echo "Done"

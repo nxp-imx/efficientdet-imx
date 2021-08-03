@@ -104,6 +104,8 @@ int main(int argc, char* argv[]) {
 
   interpreter->SetNumThreads(4);
 
+  interpreter->SetAllowFp16PrecisionForFp32(true);
+
    tflite::StatefulNnApiDelegate::Options options;
     auto delegate = tflite::evaluation::CreateNNAPIDelegate(options);
     if (!delegate) {
@@ -151,12 +153,6 @@ int main(int argc, char* argv[]) {
 
     fpsString << fps;
 
-    cv::putText(img, "FPS: " + fpsString.str(),
-                 cv::Point(10, 30), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
-
-    // Clear the content of sstream
-    fpsString.str(std::string());
-
     outputs = getOutputVectors(outTensor, 100, 7);
 
     drawBoundingBoxes(outputs, img);
@@ -165,6 +161,12 @@ int main(int argc, char* argv[]) {
     cv::cvtColor(img, outMat, cv::COLOR_RGB2BGR);
 
     cv::resize(outMat, outMat, cv::Size(framewidth, frameheight), 0, 0, cv::INTER_CUBIC);
+
+    cv::putText(outMat, "FPS: " + fpsString.str(),
+                 cv::Point(15, 45), cv::FONT_HERSHEY_SIMPLEX, 1.0, CV_RGB(255, 0, 0), 2);
+
+    // Clear the content of sstream
+    fpsString.str(std::string());
 
     out << outMat;
 
