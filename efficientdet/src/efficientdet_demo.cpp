@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
 
     cv::resize(outMat, outMat, cv::Size(framewidth, frameheight), 0, 0, cv::INTER_CUBIC);
 
-    cv::putText(img, "FPS: " + fpsString.str(),
+    cv::putText(outMat, "FPS: " + fpsString.str(),
              cv::Point(15, 45), cv::FONT_HERSHEY_SIMPLEX, 1.0, CV_RGB(255, 0, 0), 2);
 
     // Clear the content of sstream
