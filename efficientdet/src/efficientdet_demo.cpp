@@ -1,16 +1,19 @@
 #include <cstdio>
-#include <cstdint> // uint8_t
+#include <cstdint>
 #include <cstddef>
 #include <cstring>
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <experimental/filesystem> // inference all images in a file.
+#include <experimental/filesystem>
 #include "opencv2/opencv.hpp"
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
+#include "tensorflow/lite/delegates/nnapi/nnapi_delegate.h"
+#include "tensorflow/lite/tools/delegates/delegate_provider.h"
+#include "tensorflow/lite/tools/evaluation/utils.h"
 #include "efficientdet_utils.hpp"
 
 int main(int argc, char* argv[]) {
@@ -27,7 +30,7 @@ int main(int argc, char* argv[]) {
   const char* videoFile = argv[2];
   const char* modelRes  = argv[3];
 
-  int CHANNELS  = 3; // default for images
+  int CHANNELS  = 3;
   int MODEL_RES = std::stoi(std::string(modelRes));
 
   // Prepare string streams for FPS display
@@ -101,13 +104,31 @@ int main(int argc, char* argv[]) {
 
   interpreter->SetNumThreads(4);
 
+  interpreter->SetAllowFp16PrecisionForFp32(true);
+
+#ifdef EFFICIENTDET_NNAPI
+   tflite::StatefulNnApiDelegate::Options options;
+    auto delegate = tflite::evaluation::CreateNNAPIDelegate(options);
+    if (!delegate) {
+      std::cout << "NNAPI acceleration is unsupported on this platform.\n";
+    } else {
+      std::cout << "Use NNAPI acceleration.\n";
+    }
+
+    if (interpreter->ModifyGraphWithDelegate(std::move(delegate)) !=
+        kTfLiteOk) {
+      std::cout << "Failed to apply NNAPI delegate.";
+      exit(-1);
+    }
+#endif
+
   // Allocate tensor buffers.
   TFLITE_MINIMAL_CHECK(interpreter->AllocateTensors() == kTfLiteOk);
-  
-  TfLiteTensor* inTensor   = interpreter->input_tensor(0);
-  TfLiteTensor* outTensor  = interpreter->output_tensor(0);
 
-  uint8_t* input = reinterpret_cast<uint8_t*>(inTensor->data.raw);
+  TfLiteTensor* inTensor  = interpreter->input_tensor(0);
+  TfLiteTensor* outTensor = interpreter->output_tensor(0);
+
+  int8_t* input = reinterpret_cast<int8_t*>(inTensor->data.raw);
 
   // Evaluate on provided video file
   while(true)
@@ -126,7 +147,7 @@ int main(int argc, char* argv[]) {
     // Resize input image to fit the model
     cv::resize(RGBImg, img, cv::Size(MODEL_RES, MODEL_RES), 0, 0, cv::INTER_CUBIC);
 
-    memcpy((void*)input, (void*) img.data, MODEL_RES * MODEL_RES * CHANNELS * sizeof(uint8_t));
+    memcpy((void*)input, (void*) img.data, MODEL_RES * MODEL_RES * CHANNELS * sizeof(int8_t));
 
     auto inferenceTimeDuration = timedInference(interpreter.get());
 
@@ -134,9 +155,9 @@ int main(int argc, char* argv[]) {
 
     fpsString << fps;
 
-    outputs = getOutputVectors(outTensor, 100, 7);
+    outputs = getOutputVectors(outTensor, 100, 4);
 
-    drawBoundingBoxes(outputs, img);
+    drawBoundingBoxesScaled(outputs, img, MODEL_RES);
 
     // Convert back to BGR since OpenCV works with BGR
     cv::cvtColor(img, outMat, cv::COLOR_RGB2BGR);
@@ -144,7 +165,7 @@ int main(int argc, char* argv[]) {
     cv::resize(outMat, outMat, cv::Size(framewidth, frameheight), 0, 0, cv::INTER_CUBIC);
 
     cv::putText(outMat, "FPS: " + fpsString.str(),
-             cv::Point(15, 45), cv::FONT_HERSHEY_SIMPLEX, 1.0, CV_RGB(255, 0, 0), 2);
+                 cv::Point(15, 45), cv::FONT_HERSHEY_SIMPLEX, 1.0, CV_RGB(255, 0, 0), 2);
 
     // Clear the content of sstream
     fpsString.str(std::string());

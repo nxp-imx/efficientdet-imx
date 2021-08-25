@@ -1,7 +1,7 @@
 INC=-I/home/fapannen/Desktop/git/tensorflow \
-	-I/home/fapannen/Desktop/git/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include \
-	
-LIBS=-ltensorflowlite \
+	-I/home/fapannen/Desktop/git/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include
+
+LIBS=-ltensorflow-lite \
 	-lstdc++ \
 	-lpthread \
 	-lrt \
@@ -23,6 +23,8 @@ LIBS=-ltensorflowlite \
 
 BIN=efficientdet_demo
 
+GPU_BIN=efficientdet_demo_gpu
+
 EXT=../../../tensorflow/tensorflow/lite/nnapi/nnapi_implementation.cc
 
 LDOPTS:=-L./libs
@@ -34,5 +36,7 @@ all: efficientdet
 efficientdet: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
 	$(CXX) -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -o $(BIN)
 
+efficientdet-gpu: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
+	$(CXX) -DEFFICIENTDET_NNAPI=1 -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -lEGL -ltensorflowlite_gpu_delegate -o  $(GPU_BIN)
 clean:
 	rm measure_efficientdet

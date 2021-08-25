@@ -34,6 +34,7 @@ std::vector<std::vector<float>> getOutputVectors(const TfLiteTensor* tensor_ptr,
 			 model's needs.
 */
 void drawBoundingBoxes(const std::vector<std::vector<float>>& outputs, cv::Mat& image);
+void drawBoundingBoxesScaled(const std::vector<std::vector<float>>& outputs, cv::Mat& image, const int scale);
 
 
 // Tensorflow Lite

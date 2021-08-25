@@ -72,7 +72,7 @@ std::vector<std::vector<float>> getOutputVectors(const TfLiteTensor* tensor_ptr,
 
     for (int j = 0; j < output_size; ++j)
     {
-      outvec.push_back(output[(i * output_size) + j]);
+      outvec.push_back(static_cast<float>(output[(i * output_size) + j]));
     }
 
     outputs.push_back(outvec);
@@ -81,7 +81,8 @@ std::vector<std::vector<float>> getOutputVectors(const TfLiteTensor* tensor_ptr,
   return outputs;
 }
 
-// Debugging function
+// Function for drawing bounding boxes into the input image
+// In this method, coordinates aren't normalized to 0-1 range
 void drawBoundingBoxes(const std::vector<std::vector<float>>& outputs, cv::Mat& image)
 {
   std::vector<std::vector<float>> boxesToDraw;
@@ -103,6 +104,32 @@ void drawBoundingBoxes(const std::vector<std::vector<float>>& outputs, cv::Mat& 
     int xmax   = vec[4];
     int score  = vec[5];
     int label  = vec[6];
+
+    cv::Point topRight(xmin, ymin);
+    cv::Point botLeft(xmax, ymax);
+
+    cv::rectangle(image, topRight, botLeft, cv::Scalar(0, 255, 0));
+  }
+}
+
+void drawBoundingBoxesScaled(const std::vector<std::vector<float>>& outputs, cv::Mat& image, const int scale)
+{
+  std::vector<std::vector<float>> boxesToDraw;
+
+  // First output will always be drawn
+  boxesToDraw.push_back(outputs[0]);
+
+  for(size_t i = 1; i < outputs.size() - 1; i++){
+    if(outputs[i] != outputs[i-1]){
+      boxesToDraw.push_back(outputs[i]);
+    }
+  }
+
+  for(std::vector<float>& vec : boxesToDraw){
+    float ymin   = vec[0] * scale;
+    float xmin   = vec[1] * scale;
+    float ymax   = vec[2] * scale;
+    float xmax   = vec[3] * scale;
 
     cv::Point topRight(xmin, ymin);
     cv::Point botLeft(xmax, ymax);
