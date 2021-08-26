@@ -3,16 +3,20 @@
 ## EfficientDet example on i.MX8
 
 ### Preparing the model
-	1) Clone this repository
-    2) Note: This step is mandatory if you wish to work with EfficientDet versions different than d0.
-    	Open "automl/efficientdet/inference.py" in a text editor (notepad, nano, ...)
-    	- Locate function "export"
-        - Locate a line containing "converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS]" in the function
-        - Change the line to "converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]"
-    2) Download and convert models to tflite.
-    	- Windows: Use setup_tflite.py, for example "python3 setup_tflite.py d0"
-        - Linux  : Use setup_tflite.sh, for example "./setup_tflite.sh d0"
-    3) A `.tflite` file will be created in `models/<model>` folder. Copy the `.tflite` file to i.MX8 board
+	* Clone this repository
+    * Note: This step is mandatory if you wish to work with EfficientDet versions different than d0.
+    	Open `automl/efficientdet/inference.py` in a text editor (notepad, nano, ...)
+    	* Locate function `export`
+        * Locate a line containing `converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS]` in the function
+        * Change the line to `converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]`
+
+    * Download and convert models to tflite.
+    	* Windows: Use setup_tflite.py, for example `python3 setup_tflite.py d0`
+            * You can also specifiy quantization options, such as `python3 setup_tflite.py d0 INT8`
+        * Linux  : Use setup_tflite.sh, for example `./setup_tflite.sh d0`
+            * You can specify quantization options, such as `./setup_tflite.sh d0 INT8`
+
+    * A `.tflite` file will be created in `models/<model>` folder. Copy the `.tflite` file to i.MX8 board
     
 ### Preparing the environment
 #### Tensorflow    
