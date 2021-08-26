@@ -59,7 +59,7 @@ fi
 # format of tfrecords is necessary
 if [[ ${TFLITE} == "INT8" && ! -d "tfrecord" ]]; then
 	echo "'tfrecord' folder, which is necessary for EfficientDet INT8 quantization, was not found in EfficientDet repository."
-	echo "Creating now ..."
+	echo "Creating 'tfrecord' folder manually now ...\n"
 
 	if [[ ! -d "annotations" || ! -d "val2017" ]]; then
 		echo "Downloading the dataset ..."

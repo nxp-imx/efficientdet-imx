@@ -44,7 +44,8 @@ if opt:
 
 	if opt == "INT8" and not os.path.isdir("tfrecord"):
 		print("'tfrecord' folder, which is necessary for EfficientDet INT8 quantization, was not found in EfficientDet repository.")
-		print("Creating now ...")
+		print("Creating 'tfrecord' folder manually now ...")
+		print()
 
 		if not os.path.exists("annotations") or not os.path.exists("val2017"):
 			print("Downloading the dataset ...")
