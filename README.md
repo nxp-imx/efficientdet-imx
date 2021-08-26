@@ -53,10 +53,10 @@ We provide an example demo, showcasing the usage of EfficientDets on i.MX8 board
 ### Tensorflow    
 Additional libraries need to be built. More specifically, you need to compile `libtensorflow.so` shared library and install OpenCV.
 For Tensorflow shared library, you will need to install the following:
-	* Tensorflow github repository : https://github.com/tensorflow/tensorflow.git
-    * Bazel build tool             : Windows : https://docs.bazel.build/versions/main/install-windows.html
-    							   : Linux   : https://docs.bazel.build/versions/main/install-ubuntu.html
-    * Flatbuffers                  : Unofficial guide can be found for example here https://stackoverflow.com/questions/55394537/how-to-install-flatc-and-flatbuffers-on-linux-ubuntu
+* Tensorflow github repository : https://github.com/tensorflow/tensorflow.git
+* Bazel build tool             : Windows : https://docs.bazel.build/versions/main/install-windows.html
+    * 						   : Linux   : https://docs.bazel.build/versions/main/install-ubuntu.html
+* Flatbuffers                  : Unofficial guide can be found for example here https://stackoverflow.com/questions/55394537/how-to-install-flatc-and-flatbuffers-on-linux-ubuntu
 
 After you set up all necessities, you can run `bazel build --config=elinux_aarch64 -c opt //tensorflow/lite:libtensorflowlite.so` to build C++ shared library.
 For more information, refer to https://www.tensorflow.org/lite/guide/build_arm#c_library. 
