@@ -63,7 +63,7 @@ For Tensorflow shared library, you will need to install the following:
     * Linux   : https://docs.bazel.build/versions/main/install-ubuntu.html
 * **Flatbuffers**                  : Unofficial guide can be found for example here https://stackoverflow.com/questions/55394537/how-to-install-flatc-and-flatbuffers-on-linux-ubuntu
 
-After you set up all necessities, you can run `bazel build --config=elinux_aarch64 -c opt //tensorflow/lite:libtensorflowlite.so` to build C++ shared library.
+After you set up all necessities, go to tensorflow git directory, where you can run `bazel build --config=elinux_aarch64 -c opt //tensorflow/lite:libtensorflowlite.so` to build C++ shared library.
 For more information, refer to https://www.tensorflow.org/lite/guide/build_arm#c_library. 
 
 You can also choose to build Tensorflow using CMake. Building with CMake does not require bazel build tool, and will produce static archive `libtensorflow-lite.a`.
