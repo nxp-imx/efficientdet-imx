@@ -30,8 +30,9 @@ int main(int argc, char* argv[]) {
   const char* videoFile = argv[2];
   const char* modelRes  = argv[3];
 
-  int CHANNELS  = 3;
-  int MODEL_RES = std::stoi(std::string(modelRes));
+  int  CHANNELS    = 3;
+  int  MODEL_RES   = std::stoi(std::string(modelRes));
+  bool KERAS_MODEL = parseKerasModel(std::string(modelFile));
 
   // Prepare string streams for FPS display
   std::stringstream fpsString;
@@ -155,9 +156,18 @@ int main(int argc, char* argv[]) {
 
     fpsString << fps;
 
-    outputs = getOutputVectors(outTensor, 100, 4);
+    // Keras-converted models have different output tensors
+    if(KERAS_MODEL)
+    {
+      outputs = getOutputVectors(outTensor, 100, 4);
+      drawBoundingBoxesScaled(outputs, img, MODEL_RES);
+    }
 
-    drawBoundingBoxesScaled(outputs, img, MODEL_RES);
+    else
+    {
+      outputs    = getOutputVectors(outTensor, 100, 7);
+      drawBoundingBoxes(outputs, img);
+    }
 
     // Convert back to BGR since OpenCV works with BGR
     cv::cvtColor(img, outMat, cv::COLOR_RGB2BGR);

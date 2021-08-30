@@ -37,6 +37,7 @@ efficientdet: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
 	$(CXX) -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -o $(BIN)
 
 efficientdet-gpu: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
-	$(CXX) -DEFFICIENTDET_NNAPI=1 -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -lEGL -ltensorflowlite_gpu_delegate -o  $(GPU_BIN)
+	$(CXX) -DEFFICIENTDET_NNAPI=1 -std=c++17 -O2 $(INC) $(EXT) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -o  $(GPU_BIN)
 clean:
-	rm measure_efficientdet
+	rm efficientdet_demo
+	rm efficientdet_demo_gpu

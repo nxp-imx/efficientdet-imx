@@ -12,6 +12,12 @@
 
 std::chrono::milliseconds timedInference(tflite::Interpreter* interpreter);
 
+/* Find if the supplied model was converted via Keras interface.
+	 Keras-converted models have different output tensor dimensions, format and
+	 different bbox coordinates scaling.
+*/
+bool parseKerasModel(const std::string& modelName);
+
 /*Read an image from imgPath and resize it to (WIDTH x HEIGHT) */
 cv::Mat readImage(const std::string& imgPath, const int width, const int height);
 

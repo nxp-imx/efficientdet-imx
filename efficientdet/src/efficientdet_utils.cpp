@@ -12,6 +12,13 @@
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/optional_debug_tools.h"
 
+bool parseKerasModel(const std::string& modelName)
+{
+  return (modelName.find("int8") != std::string::npos) || 
+         (modelName.find("fp32") != std::string::npos) ||
+         (modelName.find("fp16") != std::string::npos);
+}
+
 cv::Mat readImage(const std::string& imgPath, const int width, const int height)
 {
   cv::Mat img;
