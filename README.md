@@ -2,28 +2,28 @@
 
 EfficientDet is a family of convolutional neural networks used for detecting objects in an image or video input. EfficientDet puts emphasis on efficiency and scalability, while achieving state-of-the-art performance results. EfficientDets come in several versions. Models range from versions D0 - D7, with D0 being the smallest and D7 being the biggest. Higher versions perform better in terms of accuracy, but worse in terms of inference latency.
 
-| EfficientDet version | Input size |  mAP  |
-| ---------------------|------------|--------
-| Efficientdet-D0      | 512        | 34.6  |
-| Efficientdet-D1      | 640        | 40.5  |
-| Efficientdet-D2      | 768        | 43.9  |
-| Efficientdet-D3      | 896        | 47.2  |
-| Efficientdet-D4      | 1024       | 49.7  |
-| Efficientdet-D5      | 1280       | 51.5  |
-| Efficientdet-D6      | 1280       | 52.6  |
-| Efficientdet-D7      | 1536       | 53.7  |
-| Efficientdet-D7x     | 1536       | 55.1  |
+| EfficientDet version | Input size |  COCO 2017 mAP  |
+| ---------------------|------------|------------------
+| Efficientdet-D0      | 512        | 34.6            |
+| Efficientdet-D1      | 640        | 40.5            |
+| Efficientdet-D2      | 768        | 43.9            |
+| Efficientdet-D3      | 896        | 47.2            |
+| Efficientdet-D4      | 1024       | 49.7            |
+| Efficientdet-D5      | 1280       | 51.5            |
+| Efficientdet-D6      | 1280       | 52.6            |
+| Efficientdet-D7      | 1536       | 53.7            |
+| Efficientdet-D7x     | 1536       | 55.1            |
 
 Along with aforementioned Efficientdet versions, even more efficient versions of EfficientDet exist. They are called Efficientdet-lite and again come in several versions. Compared to their standard counterparts, they use faster, though less accurate operations and operate on lower sized inputs.
 
-| EfficientDet-lite version | Input size |  mAP  |
-| --------------------------|------------|--------
-| Efficientdet-lite0        | 320        | 26.1  |
-| Efficientdet-lite1        | 384        | 31.5  |
-| Efficientdet-lite2        | 448        | 35.1  |
-| Efficientdet-lite3        | 512        | 38.8  |
-| Efficientdet-lite3x       | 512        | 42.6  |
-| Efficientdet-lite4        | 512        | 43.2  |
+| EfficientDet-lite version | Input size |  COCO 2017 mAP  |
+| --------------------------|------------|------------------
+| Efficientdet-lite0        | 320        | 26.1            |
+| Efficientdet-lite1        | 384        | 31.5            |
+| Efficientdet-lite2        | 448        | 35.1            |
+| Efficientdet-lite3        | 512        | 38.8            |
+| Efficientdet-lite3x       | 512        | 42.6            |
+| Efficientdet-lite4        | 512        | 43.2            |
 
 For more detailed information, refer to the following resources:
 * [arXiv paper](https://arxiv.org/abs/1911.09070) 
@@ -32,6 +32,8 @@ For more detailed information, refer to the following resources:
 # EfficientDet example on i.MX8
 
 We provide an example demo, showcasing the usage of EfficientDets on i.MX8 boards.
+
+Example video available for download from [Pexels](https://www.pexels.com/video/different-kinds-of-vehicles-on-the-freeway-2053100/)
 
 ## Preparing the model
 * **Clone this repository**
@@ -44,8 +46,10 @@ We provide an example demo, showcasing the usage of EfficientDets on i.MX8 board
 * **Download and convert models to tflite.**
    	* **Windows**: Use setup_tflite.py, for example `python3 setup_tflite.py d0`
         * You can also specifiy quantization options, such as `python3 setup_tflite.py d0 INT8`
+        * Please note that the application is designed to work with models with no optimizations or INT8 quantization. Using FP32 or FP16 quantized models requires different input data type.
     * **Linux**  : Use setup_tflite.sh, for example `./setup_tflite.sh d0`
         * You can specify quantization options, such as `./setup_tflite.sh d0 INT8`
+        * Please note that the application is designed to work with models with no optimizations or INT8 quantization. Using FP32 or FP16 quantized models requires different input data type.
 
 * A `.tflite` file will be created in `models/<model>` folder. Copy the `.tflite` file to i.MX8 board
     
@@ -79,8 +83,8 @@ You need to install OpenCV to successfully crosscompile EfficientDet demo.
 * Proceed to `efficientdet/src` directory. Edit the Makefile's `INC` variable, so that it points to your `tensorflow` and `flatbuffers/include` directories. Do the same also for `EXT` variable.
 * run `make efficientdet` in the `src` directory. This should produce `efficientdet_demo` ELF binary file. Copy this binary to i.MX8 board.
     * If you want to compile the binary with NNAPI support, run `make efficientdet-gpu`
-* Access the board and execute the binary as `./efficientdet_demo <efficientdet_model_file> <input_video_file> <model_input_size>`
-	* For example `./efficientdet_demo efficientdet-lite0.tflite myvideo.mp4 320`
-    * If you compiled with NNAPI support: `./efficientdet_demo_gpu efficientdet-lite0.tflite myvideo.mp4 320`
+* Access the board and execute the binary as `./efficientdet_demo <efficientdet_model_file> <input_video_file>`
+	* For example `./efficientdet_demo efficientdet-lite0.tflite myvideo.mp4`
+    * If you compiled with NNAPI support: `./efficientdet_demo_gpu efficientdet-lite0.tflite myvideo.mp4`
 * After the application is done, you should find `out.avi` file in the current directory
     
