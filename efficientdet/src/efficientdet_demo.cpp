@@ -17,9 +17,9 @@
 #include "efficientdet_utils.hpp"
 
 int main(int argc, char* argv[]) {
-  if (argc != 4) {
+  if (argc < 3) {
     fprintf(stderr, "Invalid number of arguments ... \n");
-    fprintf(stderr, "Usage: ./efficientdet_demo <tflite model> <path to input file> <input size>\n");
+    fprintf(stderr, "Usage: ./efficientdet_demo <tflite model> <path to input file>\n");
     return 1;
   }
 
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
   const char* modelRes  = argv[3];
 
   int  CHANNELS    = 3;
-  int  MODEL_RES   = std::stoi(std::string(modelRes));
+  int  MODEL_RES   = parseModelRes(std::string(modelFile));
   bool KERAS_MODEL = parseKerasModel(std::string(modelFile));
 
   // Prepare string streams for FPS display
@@ -165,7 +165,7 @@ int main(int argc, char* argv[]) {
 
     else
     {
-      outputs    = getOutputVectors(outTensor, 100, 7);
+      outputs = getOutputVectors(outTensor, 100, 7);
       drawBoundingBoxes(outputs, img);
     }
 

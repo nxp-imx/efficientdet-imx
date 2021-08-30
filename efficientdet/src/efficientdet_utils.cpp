@@ -12,6 +12,37 @@
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/optional_debug_tools.h"
 
+int parseModelRes(const std::string& modelName)
+{
+  std::map<std::string, int> efficientDetResMap{
+    {"efficientdet-d0",     512},
+    {"efficientdet-d1",     640},
+    {"efficientdet-d2",     768},
+    {"efficientdet-d3",     896},
+    {"efficientdet-d4",     1024},
+    {"efficientdet-d5",     1280},
+    {"efficientdet-d6",     1280},
+    {"efficientdet-d7",     1536},
+    {"efficientdet-d7x",    1536},
+    {"efficientdet-lite0",  320},
+    {"efficientdet-lite1",  384},
+    {"efficientdet-lite2",  448},
+    {"efficientdet-lite3",  512},
+    {"efficientdet-lite3x", 512},
+    {"efficientdet-lite4",  512}};
+
+    for (const auto &mapping : efficientDetResMap)
+    {
+      if(modelName.find(mapping.first) != std::string::npos)
+      {
+        return efficientDetResMap[mapping.first];
+      }
+    }
+
+    std::cout << "No suitable resolution detected!\n Make sure your model is named 'efficientdet-<version>.tflite'" << std::endl;
+    return -1;
+}
+
 bool parseKerasModel(const std::string& modelName)
 {
   return (modelName.find("int8") != std::string::npos) || 
