@@ -80,7 +80,7 @@ You need to install OpenCV to successfully crosscompile EfficientDet demo.
  * After installation, run `export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib`, to ensure linker can find newly built files
 
 ## Running the application
-* Proceed to `efficientdet/src` directory. Edit the Makefile's `INC` variable, so that it points to your `tensorflow` and `flatbuffers/include` directories. Do the same also for `EXT` variable.
+* Proceed to `efficientdet/src` directory. Edit the Makefile's `INC` variable, so that it points to your `tensorflow` and `flatbuffers/include` directories. Edit also `EXT` variable accordingly.
 * run `make efficientdet` in the `src` directory. This should produce `efficientdet_demo` ELF binary file. Copy this binary to i.MX8 board.
     * If you want to compile the binary with NNAPI support, run `make efficientdet-gpu`
 * Access the board and execute the binary as `./efficientdet_demo <efficientdet_model_file> <input_video_file>`
