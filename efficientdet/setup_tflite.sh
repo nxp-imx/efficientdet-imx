@@ -1,3 +1,4 @@
+#!/bin/bash
 # Script expects argument which version of efficientDet to download (ie "d0") and an optimization string, ie "INT8", "FP16", etc...
 
 cd checkpoints
