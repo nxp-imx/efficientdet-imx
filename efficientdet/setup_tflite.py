@@ -74,7 +74,7 @@ if opt:
 	 		--output_file_prefix=tfrecord/val")
 
 
-	os.system("python3 -m keras.inspector \
+	os.system("python3 -m tf2.inspector \
  		--mode=export \
 		--file_pattern=tfrecord/*.tfrecord \
 		--model_name=efficientdet-" + model + " \
