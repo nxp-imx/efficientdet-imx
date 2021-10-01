@@ -14,6 +14,9 @@ opt   = None
 if len(sys.argv) > 2:
 	opt = sys.argv[2]
 
+# Update submodule
+os.system("git submodule update --init --recursive")
+
 # Download models
 # Standard and lite models have slightly different download paths
 

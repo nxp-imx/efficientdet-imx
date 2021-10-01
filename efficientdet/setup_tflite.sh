@@ -1,7 +1,11 @@
 #!/bin/bash
 # Script expects argument which version of efficientDet to download (ie "d0") and an optimization string, ie "INT8", "FP16", etc...
 
-cd checkpoints
+# Update submodule automl containing EfficientDet
+cd ..
+git submodule update --init --recursive
+
+cd efficientdet/checkpoints
 
 # Download models
 # Standard and lite models have slightly different download paths
@@ -78,7 +82,7 @@ if [[ ${TFLITE} == "INT8" && ! -d "tfrecord" ]]; then
 	 --output_file_prefix=tfrecord/val
 fi
 
-python3 -m keras.inspector \
+python3 -m tf2.inspector \
  --mode=export \
  --file_pattern=tfrecord/*.tfrecord \
  --model_name=efficientdet-${1} \

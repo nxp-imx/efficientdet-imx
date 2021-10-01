@@ -25,7 +25,7 @@ BIN=efficientdet_demo
 
 GPU_BIN=efficientdet_demo_gpu
 
-#EXT=../../../tensorflow/tensorflow/lite/nnapi/nnapi_implementation.cc
+EXT=../../../tensorflow/tensorflow/lite/nnapi/nnapi_implementation.cc
 
 LDOPTS:=-L./libs
 
