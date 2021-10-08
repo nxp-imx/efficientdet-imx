@@ -1,18 +1,22 @@
-# Script expects argument which version of efficientDet to download (ie "d0")
-
 import requests
 import sys
 import tarfile
 import zipfile
 import os
 import shutil
+import argparse
 
-model = sys.argv[1]
-opt   = None 
+parser = argparse.ArgumentParser(description='EfficientDet preparation script')
 
-# If quantization is requested
-if len(sys.argv) > 2:
-	opt = sys.argv[2]
+parser.add_argument('--model', help='EfficientDet version (ie. d0, d2, lite0, lite2, ...)', required=True)
+parser.add_argument('--max_detections', help='Maximum number of detections', default=100, required=False)
+parser.add_argument('--quant', help='Quantization option (INT8, FP16, FP32)', required=False)
+
+args = vars(parser.parse_args())
+
+model 		   = args["model"]
+opt   		   = args["quant"]
+max_detections = args["max_detections"]
 
 # Update submodule
 os.system("git submodule update --init --recursive")
@@ -41,7 +45,7 @@ if os.path.isdir("checkpoints/efficientdet-" + model + "/saved_model"):
 if not os.path.isdir("models/efficientdet-" + model):
 	os.mkdir("models/efficientdet-" + model)
 
-if opt:
+if opt is not None:
 
 	os.chdir("../automl/efficientdet")
 
@@ -80,6 +84,7 @@ if opt:
 		--model_name=efficientdet-" + model + " \
 		--model_dir=../../efficientdet/checkpoints/efficientdet-" + model + " \
 		--num_calibration_steps=1000 \
+		--hparams='tflite_max_detections=" + max_detections + "' \
 		--saved_model_dir=../../efficientdet/checkpoints/efficientdet-" + model + "/saved_model \
 		--tflite=" + opt)
 
@@ -89,7 +94,14 @@ if opt:
 
 else:
 	# Convert the model to tflite using original EfficientDet script
-	os.system("python3 ../automl/efficientdet/model_inspect.py --runmode=saved_model --model_name=efficientdet-" + model + " --ckpt_path=checkpoints/efficientdet-" + model + " --saved_model_dir=checkpoints/efficientdet-" + model + "/saved_model --min_score_thresh=0.0 --tflite_path=models/efficientdet-" + model + "/efficientdet-" + model + ".tflite")
+	os.system("python3 ../automl/efficientdet/model_inspect.py \
+		--runmode=saved_model \
+		--model_name=efficientdet-" + model + " \
+		--ckpt_path=checkpoints/efficientdet-" + model + " \
+		--max_boxes_to_draw=" + max_detections + "\
+		--saved_model_dir=checkpoints/efficientdet-" + model + "/saved_model \
+		--min_score_thresh=0.0 \
+		--tflite_path=models/efficientdet-" + model + "/efficientdet-" + model + ".tflite")
 
 print("You can find the converted model in 'models' directory.")
 print("Done")
