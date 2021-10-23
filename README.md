@@ -57,25 +57,9 @@ Example video available for download from [Pexels](https://www.pexels.com/video/
 
 ### Create Virtual Environment
 
-1. Create virtual environment:
-```shell
-python -m virtualenv pythonenv
-```
-
-2. Activate:
-On Windows:
-```shell
-.\pythonenv\Scripts\activate
-```
-On Linux:
-```shell
-source pythonenv/bin/activate
-```
-
-3. Install required modules:
-```shell
-pip install -r requirements.txt
-```
+1. Create virtual environment: `python -m virtualenv pythonenv`
+2. Activate on Windows: `.\pythonenv\Scripts\activate` or on Linux: `source pythonenv/bin/activate`
+3. Install required modules: `pip install -r requirements.txt`
 
 *Note: To create the tflite FP32 model on Windows, TF 2.4.0 must be used. For the quantized model TF 2.5.0 works.*
 
