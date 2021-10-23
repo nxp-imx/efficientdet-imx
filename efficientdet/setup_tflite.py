@@ -6,6 +6,8 @@ import os
 import shutil
 import argparse
 
+python_exec="python"
+
 parser = argparse.ArgumentParser(description='EfficientDet preparation script')
 
 parser.add_argument('--model', help='EfficientDet version (ie. d0, d2, lite0, lite2, ...)', required=True)
@@ -25,10 +27,10 @@ os.system("git submodule update --init --recursive")
 # Standard and lite models have slightly different download paths
 
 if "lite" in model:
-	req = requests.get("https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco/efficientdet-" + model + ".tgz")
+	req = requests.get("https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco/efficientdet-{model}.tgz".format(model=model))
 
 else:
-	req = requests.get("https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco2/efficientdet-" + model + ".tar.gz")
+	req = requests.get("https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco2/efficientdet-{model}.tar.gz".format(model=model))
 
 with open ("checkpoints/tmp.tar.gz", "wb") as w:
 	w.write(req.content)
@@ -39,11 +41,11 @@ os.remove("checkpoints/tmp.tar.gz")
 
 # Script requires clean checkpoint, otherwise will fail
 
-if os.path.isdir("checkpoints/efficientdet-" + model + "/saved_model"):
-	shutil.rmtree("checkpoints/efficientdet-" + model + "/saved_model")
+if os.path.isdir("checkpoints/efficientdet-{model}/saved_model".format(model=model)):
+	shutil.rmtree("checkpoints/efficientdet-{model}/saved_model".format(model=model))
 
-if not os.path.isdir("models/efficientdet-" + model):
-	os.mkdir("models/efficientdet-" + model)
+if not os.path.isdir("models/efficientdet-{model}".format(model=model)):
+	os.mkdir("models/efficientdet-{model}".format(model=model))
 
 if opt is not None:
 
@@ -72,36 +74,40 @@ if opt is not None:
 			with zipfile.ZipFile("val2017.zip", "r") as unzipVal:
 				unzipVal.extractall()
 
-		os.system("python3 -m dataset.create_coco_tfrecord \
+		os.system("{python} -m dataset.create_coco_tfrecord \
 	 		--image_dir=val2017 \
 	 		--caption_annotations_file=annotations/captions_val2017.json \
-	 		--output_file_prefix=tfrecord/val")
+	 		--output_file_prefix=tfrecord/val".format(python=python_exec))
 
 
-	os.system("python3 -m tf2.inspector \
+	os.system("{python} -m tf2.inspector \
  		--mode=export \
 		--file_pattern=tfrecord/*.tfrecord \
-		--model_name=efficientdet-" + model + " \
-		--model_dir=../../efficientdet/checkpoints/efficientdet-" + model + " \
+		--model_name=efficientdet-{model} \
+		--model_dir=../../efficientdet/checkpoints/efficientdet-{model} \
 		--num_calibration_steps=1000 \
-		--hparams='tflite_max_detections=" + max_detections + "' \
-		--saved_model_dir=../../efficientdet/checkpoints/efficientdet-" + model + "/saved_model \
-		--tflite=" + opt)
+		--hparams=\"tflite_max_detections={tflite_max_detections}\" \
+		--saved_model_dir=../../efficientdet/checkpoints/efficientdet-{model}/saved_model \
+		--tflite={tflite}".format(python=python_exec, model=model, tflite=opt, tflite_max_detections=max_detections))
 
 	os.chdir("../../efficientdet")
 
-	shutil.copyfile("checkpoints/efficientdet-" + model + "/saved_model/" + opt.lower() + ".tflite", "models/efficientdet-" + model + "/efficientdet-" + model + "-" + opt.lower() + ".tflite")
+	shutil.copyfile("checkpoints/efficientdet-{model}/saved_model/{opt}.tflite".format(
+		model=model, opt=opt.lower()), 
+	"models/efficientdet-{model}/efficientdet-{model}-{opt}.tflite".format(
+		model=model, opt=opt.lower()))
 
 else:
 	# Convert the model to tflite using original EfficientDet script
-	os.system("python3 ../automl/efficientdet/model_inspect.py \
+	os.system("{python} ../automl/efficientdet/model_inspect.py \
 		--runmode=saved_model \
-		--model_name=efficientdet-" + model + " \
-		--ckpt_path=checkpoints/efficientdet-" + model + " \
-		--max_boxes_to_draw=" + max_detections + "\
-		--saved_model_dir=checkpoints/efficientdet-" + model + "/saved_model \
+		--model_name=efficientdet-{model} \
+		--ckpt_path=checkpoints/efficientdet-{model} \
+		--max_boxes_to_draw={max_boxes_to_draw} \
+		--saved_model_dir=checkpoints/efficientdet-{model}/saved_model \
 		--min_score_thresh=0.0 \
-		--tflite_path=models/efficientdet-" + model + "/efficientdet-" + model + ".tflite")
+		--tflite_path=models/efficientdet-{model}/efficientdet-{model}.tflite".format(
+			python=python_exec, model=model, max_boxes_to_draw=max_detections))
 
 print("You can find the converted model in 'models' directory.")
 print("Done")

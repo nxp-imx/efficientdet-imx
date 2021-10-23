@@ -54,7 +54,33 @@ Example video available for download from [Pexels](https://www.pexels.com/video/
 * A `.tflite` file will be created in `models/<model>` folder. Copy the `.tflite` file to i.MX8 board
     
 ## Preparing the environment
-### Tensorflow    
+
+### Create Virtual Environment
+
+1. Create virtual environment:
+```shell
+python -m virtualenv pythonenv
+```
+
+2. Activate:
+On Windows:
+```shell
+.\pythonenv\Scripts\activate
+```
+On Linux:
+```shell
+source pythonenv/bin/activate
+```
+
+3. Install required modules:
+```shell
+pip install -r requirements.txt
+```
+
+*Note: To create the tflite FP32 model on Windows, TF 2.4.0 must be used. For the quantized model TF 2.5.0 works.*
+
+### Tensorflow  
+  
 Additional libraries need to be built. More specifically, you need to compile `libtensorflow.so` shared library and install OpenCV.
 For Tensorflow shared library, you will need to install the following:
 * **Tensorflow github repository** : https://github.com/tensorflow/tensorflow.git
@@ -87,4 +113,3 @@ You need to install OpenCV to successfully crosscompile EfficientDet demo.
 	* For example `./efficientdet_demo efficientdet-lite0.tflite myvideo.mp4`
     * If you compiled with NNAPI support: `./efficientdet_demo_gpu efficientdet-lite0.tflite myvideo.mp4`
 * After the application is done, you should find `out.avi` file in the current directory
-    
