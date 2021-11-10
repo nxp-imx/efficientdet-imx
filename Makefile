@@ -1,3 +1,6 @@
 all:
-	$(MAKE) efficientdet -C efficientdet/src
-	$(MAKE) efficientdet-gpu -C efficientdet/src
+	$(MAKE) all -C efficientdet/src
+
+clean:
+	rm efficientdet/src/efficientdet_demo
+	rm efficientdet/src/efficientdet_demo_gpu
