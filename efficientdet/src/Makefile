@@ -33,7 +33,7 @@ LDOPTS:=-L./libs
 
 UTILS=efficientdet_utils
 
-all: efficientdet efficientdet-gpu
+all: efficientdet efficientdet-gpu efficientdet-vx
 
 efficientdet: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
 	$(CXX) -std=c++17 -O2 $(INC) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -o $(BIN)
@@ -47,3 +47,4 @@ efficientdet-vx: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
 clean:
 	rm efficientdet_demo
 	rm efficientdet_demo_gpu
+	rm efficientdet_demo_vx
