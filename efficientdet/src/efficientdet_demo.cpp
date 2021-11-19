@@ -14,21 +14,28 @@
 #include "tensorflow/lite/delegates/nnapi/nnapi_delegate.h"
 #include "tensorflow/lite/tools/delegates/delegate_provider.h"
 #include "tensorflow/lite/tools/evaluation/utils.h"
+#include "tensorflow/lite/delegates/external/external_delegate.h"
 #include "efficientdet_utils.hpp"
 
 int main(int argc, char* argv[]) {
   if (argc < 3) {
     fprintf(stderr, "Invalid number of arguments ... \n");
-    fprintf(stderr, "Usage: ./efficientdet_demo <tflite model> <path to input file>\n");
+    fprintf(stderr, "Usage: ./efficientdet_demo <tflite model> <path to input file> [TF_DELEGATE_PATH]\n");
     return 1;
   }
 
   std::cout << "EfficientDet detection example" << std::endl;
   std::cout << "==============================" << std::endl;
 
-  const char* modelFile = argv[1];
-  const char* videoFile = argv[2];
-  const char* modelRes  = argv[3];
+  const char* modelFile    = argv[1];
+  const char* videoFile    = argv[2];
+  const char* delegatePath = nullptr;
+
+  // DelegatePath argument is optional (VX delegate)
+  if (argc == 4)
+  {
+    delegatePath = argv[3];
+  }
 
   int  CHANNELS    = 3;
   int  MODEL_RES   = parseModelRes(std::string(modelFile));
@@ -118,8 +125,23 @@ int main(int argc, char* argv[]) {
 
     if (interpreter->ModifyGraphWithDelegate(std::move(delegate)) !=
         kTfLiteOk) {
-      std::cout << "Failed to apply NNAPI delegate.";
+      std::cout << "Failed to apply NNAPI delegate.\n";
       exit(-1);
+    }
+#endif
+
+#ifdef EFFICIENTDET_VX
+    auto ext_delegate_option = TfLiteExternalDelegateOptionsDefault(delegatePath);
+    auto ext_delegate_ptr = TfLiteExternalDelegateCreate(&ext_delegate_option);
+    if(!ext_delegate_ptr){
+      std::cout << "VX acceleration failed to initialize.\n";
+    }
+    else{
+      std::cout << "VX acceleration enabled.\n";
+    }
+
+    if(interpreter->ModifyGraphWithDelegate(ext_delegate_ptr) != kTfLiteOk){
+      std::cout << "Failed to apply VX delegate.\n";
     }
 #endif
 

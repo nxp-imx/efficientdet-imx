@@ -25,6 +25,8 @@ BIN=efficientdet_demo
 
 GPU_BIN=efficientdet_demo_gpu
 
+VX_BIN=efficientdet_demo_vx
+
 EXT=../../../tensorflow/tensorflow/lite/nnapi/nnapi_implementation.cc
 
 LDOPTS:=-L./libs
@@ -38,6 +40,10 @@ efficientdet: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
 
 efficientdet-gpu: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
 	$(CXX) -DEFFICIENTDET_NNAPI=1 -std=c++17 -O2 $(INC) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -o  $(GPU_BIN)
+
+efficientdet-vx: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
+	$(CXX) -DEFFICIENTDET_VX=1 -std=c++17 -O2 $(INC) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -o  $(VX_BIN)
+
 clean:
 	rm efficientdet_demo
 	rm efficientdet_demo_gpu
