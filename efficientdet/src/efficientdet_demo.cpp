@@ -130,6 +130,12 @@ int main(int argc, char* argv[]) {
 
   interpreter->SetAllowFp16PrecisionForFp32(true);
 
+  // When working with external delegates
+  // It is necessary to remember the pointers
+  // For successful removal of the delegate
+  TfLiteExternalDelegateOptions  ext_delegate_option;
+  TfLiteDelegate*                ext_delegate_ptr;
+
   if (toUpperCase(backend) == std::string("NNAPI")){
     tflite::StatefulNnApiDelegate::Options options;
     auto delegate = tflite::evaluation::CreateNNAPIDelegate(options);
@@ -147,8 +153,8 @@ int main(int argc, char* argv[]) {
   }
 
   else if(toUpperCase(backend) == std::string("VX")){
-    auto ext_delegate_option = TfLiteExternalDelegateOptionsDefault(delegatePath.c_str());
-    auto ext_delegate_ptr = TfLiteExternalDelegateCreate(&ext_delegate_option);
+    ext_delegate_option = TfLiteExternalDelegateOptionsDefault(delegatePath.c_str());
+    ext_delegate_ptr = TfLiteExternalDelegateCreate(&ext_delegate_option);
     if(!ext_delegate_ptr){
       std::cout << "VX acceleration failed to initialize." << std::endl;
     }
@@ -223,6 +229,10 @@ int main(int argc, char* argv[]) {
 
   // Finalize the output video
   out.release();
+
+  if(toUpperCase(backend) == std::string("VX")){
+    TfLiteExternalDelegateDelete(ext_delegate_ptr);
+  }
 
   std::cout << "Done" << std::endl;
 
