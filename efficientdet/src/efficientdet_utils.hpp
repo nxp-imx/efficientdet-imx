@@ -10,6 +10,11 @@
 #include "tensorflow/lite/optional_debug_tools.h"
 
 /*
+	Converts a given string to uppercase format
+*/
+std::string toUpperCase(const std::string& str);
+
+/*
 	Performs a single inference with time measurement. Time measurement is then
 	used to estimate FPS.
 

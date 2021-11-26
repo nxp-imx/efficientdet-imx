@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  if(backend == std::string("VX") && delegatePath.empty()){
+  if(toUpperCase(backend) == std::string("VX") && delegatePath.empty()){
     std::cout << "No VX_DELEGATE supplied ..." << std::endl;
     return 1;
   }
@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
 
   interpreter->SetAllowFp16PrecisionForFp32(true);
 
-  if (backend == std::string("NNAPI")){
+  if (toUpperCase(backend) == std::string("NNAPI")){
     tflite::StatefulNnApiDelegate::Options options;
     auto delegate = tflite::evaluation::CreateNNAPIDelegate(options);
     if (!delegate) {
@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  else if(backend == std::string("VX")){
+  else if(toUpperCase(backend) == std::string("VX")){
     auto ext_delegate_option = TfLiteExternalDelegateOptionsDefault(delegatePath.c_str());
     auto ext_delegate_ptr = TfLiteExternalDelegateCreate(&ext_delegate_option);
     if(!ext_delegate_ptr){

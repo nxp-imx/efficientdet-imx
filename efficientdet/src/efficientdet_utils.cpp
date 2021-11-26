@@ -12,6 +12,16 @@
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/optional_debug_tools.h"
 
+std::string toUpperCase(const std::string& str){
+  std::string res;
+
+  for(auto c : str){
+    res.push_back(std::toupper(c));
+  }
+
+  return res;
+}
+
 int parseModelRes(const std::string& modelName)
 {
   std::map<std::string, int> efficientDetResMap{
