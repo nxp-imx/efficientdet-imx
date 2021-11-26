@@ -7,7 +7,6 @@
 #include <fstream>
 #include <sstream>
 #include <experimental/filesystem>
-#include "opencv2/opencv.hpp"
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
@@ -15,7 +14,9 @@
 #include "tensorflow/lite/tools/delegates/delegate_provider.h"
 #include "tensorflow/lite/tools/evaluation/utils.h"
 #include "tensorflow/lite/delegates/external/external_delegate.h"
+#include "opencv2/opencv.hpp"
 #include "efficientdet_utils.hpp"
+#include "cxxopts.hpp"
 
 int main(int argc, char* argv[]) {
   if (argc < 3) {
@@ -24,22 +25,37 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
+  cxxopts::Options appOptions("EfficientDet detection example", "Example object detection using EfficientDet on an input video file.");
+
+  appOptions.add_options()
+  ("m,model", "Path to EfficientDet model", cxxopts::value<std::string>()->default_value(""))
+  ("i,input", "Path to input video file", cxxopts::value<std::string>()->default_value(""))
+  ("b,backend", "Backend to use for inference (CPU, NNAPI, ...)", cxxopts::value<std::string>()->default_value("CPU"))
+  ("d,delegate", "Path to external delegate (ie. VX)", cxxopts::value<std::string>()->default_value(""));
+
   std::cout << "EfficientDet detection example" << std::endl;
   std::cout << "==============================" << std::endl;
 
-  const char* modelFile    = argv[1];
-  const char* videoFile    = argv[2];
-  const char* delegatePath = nullptr;
+  auto parsedOptions = appOptions.parse(argc, argv);
 
-  // DelegatePath argument is optional (VX delegate)
-  if (argc == 4)
-  {
-    delegatePath = argv[3];
+  std::string modelFile    = parsedOptions["model"].as<std::string>();
+  std::string videoFile    = parsedOptions["input"].as<std::string>();
+  std::string backend      = parsedOptions["backend"].as<std::string>();
+  std::string delegatePath = parsedOptions["delegate"].as<std::string>();
+  
+  if(modelFile.empty() || videoFile.empty()){
+    std::cout << "Please provide path to model (-m) and input file (-i) as command line arguments" << std::endl;
+    return 1;
+  }
+
+  if(backend == std::string("VX") && delegatePath.empty()){
+    std::cout << "No VX_DELEGATE supplied ..." << std::endl;
+    return 1;
   }
 
   int  CHANNELS    = 3;
-  int  MODEL_RES   = parseModelRes(std::string(modelFile));
-  bool KERAS_MODEL = parseKerasModel(std::string(modelFile));
+  int  MODEL_RES   = parseModelRes(modelFile);
+  bool KERAS_MODEL = parseKerasModel(modelFile);
 
   // Prepare string streams for FPS display
   std::stringstream fpsString;
@@ -57,7 +73,7 @@ int main(int argc, char* argv[]) {
   cv::VideoCapture cap(videoFile);
 
   if(!cap.isOpened()){
-    printf("Failed to open input file ...\n");
+    std::cout << "Failed to open input file ..." << std::endl;
     return -1;
   }
 
@@ -101,7 +117,7 @@ int main(int argc, char* argv[]) {
 
   // Load model
   std::unique_ptr<tflite::FlatBufferModel> model =
-      tflite::FlatBufferModel::BuildFromFile(modelFile);
+      tflite::FlatBufferModel::BuildFromFile(modelFile.c_str());
   TFLITE_MINIMAL_CHECK(model != nullptr);
 
   tflite::ops::builtin::BuiltinOpResolver resolver;
@@ -114,36 +130,36 @@ int main(int argc, char* argv[]) {
 
   interpreter->SetAllowFp16PrecisionForFp32(true);
 
-#ifdef EFFICIENTDET_NNAPI
-   tflite::StatefulNnApiDelegate::Options options;
+  if (backend == std::string("NNAPI")){
+    tflite::StatefulNnApiDelegate::Options options;
     auto delegate = tflite::evaluation::CreateNNAPIDelegate(options);
     if (!delegate) {
-      std::cout << "NNAPI acceleration is unsupported on this platform.\n";
+      std::cout << "NNAPI acceleration is unsupported on this platform." << std::endl;
     } else {
-      std::cout << "Use NNAPI acceleration.\n";
+      std::cout << "Use NNAPI acceleration." << std::endl;
     }
 
     if (interpreter->ModifyGraphWithDelegate(std::move(delegate)) !=
         kTfLiteOk) {
-      std::cout << "Failed to apply NNAPI delegate.\n";
-      exit(-1);
+      std::cout << "Failed to apply NNAPI delegate." << std::endl;
+      return 1;
     }
-#endif
+  }
 
-#ifdef EFFICIENTDET_VX
-    auto ext_delegate_option = TfLiteExternalDelegateOptionsDefault(delegatePath);
+  else if(backend == std::string("VX")){
+    auto ext_delegate_option = TfLiteExternalDelegateOptionsDefault(delegatePath.c_str());
     auto ext_delegate_ptr = TfLiteExternalDelegateCreate(&ext_delegate_option);
     if(!ext_delegate_ptr){
-      std::cout << "VX acceleration failed to initialize.\n";
+      std::cout << "VX acceleration failed to initialize." << std::endl;
     }
     else{
-      std::cout << "VX acceleration enabled.\n";
+      std::cout << "VX acceleration enabled." << std::endl;
     }
 
     if(interpreter->ModifyGraphWithDelegate(ext_delegate_ptr) != kTfLiteOk){
-      std::cout << "Failed to apply VX delegate.\n";
+      std::cout << "Failed to apply VX delegate." << std::endl;
     }
-#endif
+  }
 
   // Allocate tensor buffers.
   TFLITE_MINIMAL_CHECK(interpreter->AllocateTensors() == kTfLiteOk);
@@ -154,13 +170,13 @@ int main(int argc, char* argv[]) {
   int8_t* input = reinterpret_cast<int8_t*>(inTensor->data.raw);
 
   // Evaluate on provided video file
-  while(true)
-  {
+  while(true){
+
     // Capture a frame
     cap >> img;
 
     if(img.empty()){
-      printf("End of file, exitting ...\n");
+      std::cout << "End of file, exitting ..." << std::endl;
       break;
     }
 
@@ -179,14 +195,12 @@ int main(int argc, char* argv[]) {
     fpsString << fps;
 
     // Keras-converted models have different output tensors
-    if(KERAS_MODEL)
-    {
+    if(KERAS_MODEL){
       outputs = getOutputVectors(outTensor, 100, 4);
       drawBoundingBoxesScaled(outputs, img, MODEL_RES);
     }
 
-    else
-    {
+    else{
       outputs = getOutputVectors(outTensor, 100, 7);
       drawBoundingBoxes(outputs, img);
     }
