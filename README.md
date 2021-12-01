@@ -99,3 +99,11 @@ You need to install OpenCV to successfully crosscompile EfficientDet demo.
     * Running the application with VX delegate is therefore done by executing the following: 
     * `./efficientdet_demo -m <efficientdet_model_file> -i <input_video_file> -b VX -d <path_to_vx_delegate>`
 * After the application is done, you should find `out.avi` file in the current directory
+
+## Licenses
+
+Repository contains a sample video to make running the sample application easier.
+
+| File       | Source     | License     |
+| ----------- | ---------- | ----------- |
+| cars_short.mp4 | https://www.pexels.com/video/different-kinds-of-vehicles-on-the-freeway-2053100/ | Pexels License (Free to use)
