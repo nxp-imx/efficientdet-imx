@@ -1,3 +1,7 @@
+/*
+* Copyright 2021 NXP
+*/
+
 #include <iostream>
 #include <vector>
 #include <chrono>

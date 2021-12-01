@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Copyright 2021 NXP
+
 # Script expects argument which version of efficientDet to download (ie "d0") and an optimization string, ie "INT8", "FP16", etc...
 # You can also provide a third argument specifying how many outputs there should be. By default, EfficientDet uses 100.
 

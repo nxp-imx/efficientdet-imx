@@ -1,3 +1,7 @@
+/*
+* Copyright 2021 NXP
+*/
+
 #ifndef EFFICIENTDET_UTILS
 #define EFFICIENTDET_UTILS
 

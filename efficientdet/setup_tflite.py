@@ -1,3 +1,5 @@
+# Copyright 2021 NXP
+
 import requests
 import sys
 import tarfile

@@ -1,3 +1,7 @@
+/*
+* Copyright 2021 NXP
+*/
+
 #include <cstdio>
 #include <cstdint>
 #include <cstddef>
