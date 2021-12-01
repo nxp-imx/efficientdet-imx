@@ -1,5 +1,6 @@
 INC=-I/home/fapannen/Desktop/git/tensorflow \
-	-I/home/fapannen/Desktop/git/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include
+	-I/home/fapannen/Desktop/git/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include \
+	-I../third-party/cxxopts
 
 LIBS=-ltensorflow-lite \
 	-lstdc++ \
