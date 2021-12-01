@@ -33,7 +33,6 @@ all: efficientdet
 
 efficientdet: $(BIN).cpp $(UTILS).cpp $(UTILS).hpp
 	$(CXX) -std=c++17 -O2 $(INC) $(UTILS).cpp $(BIN).cpp $(LDOPTS) $(LIBS) -o $(BIN)
-	cp $(BIN) $(BIN)_gpu
 
 clean:
 	rm efficientdet_demo

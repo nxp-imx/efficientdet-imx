@@ -19,11 +19,6 @@
 #include "cxxopts.hpp"
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    fprintf(stderr, "Invalid number of arguments ... \n");
-    fprintf(stderr, "Usage: ./efficientdet_demo <tflite model> <path to input file> [TF_DELEGATE_PATH]\n");
-    return 1;
-  }
 
   cxxopts::Options appOptions("EfficientDet detection example", "Example object detection using EfficientDet on an input video file.");
 

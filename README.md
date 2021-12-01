@@ -65,7 +65,7 @@ Example video available for download from [Pexels](https://www.pexels.com/video/
 
 ### Tensorflow  
   
-Additional libraries need to be built. More specifically, you need to compile `libtensorflow.so` shared library and install OpenCV.
+Additional libraries need to be built. More specifically, you need to compile `libtensorflow-lite.so` shared library and install OpenCV.
 For Tensorflow shared library, you will need to install the following:
 * **Tensorflow github repository** : https://github.com/tensorflow/tensorflow.git
 * **Bazel build tool**
@@ -92,8 +92,10 @@ You need to install OpenCV to successfully crosscompile EfficientDet demo.
 ## Running the application
 * Proceed to `efficientdet/src` directory. Edit the Makefile's `INC` variable, so that it points to your `tensorflow` and `flatbuffers/include` directories. Edit also `EXT` variable accordingly.
 * run `make efficientdet` in the `src` directory. This should produce `efficientdet_demo` ELF binary file. Copy this binary to i.MX8 board.
-    * If you want to compile the binary with NNAPI support, run `make efficientdet-gpu`
-* Access the board and execute the binary as `./efficientdet_demo <efficientdet_model_file> <input_video_file>`
-	* For example `./efficientdet_demo efficientdet-lite0.tflite myvideo.mp4`
-    * If you compiled with NNAPI support: `./efficientdet_demo_gpu efficientdet-lite0.tflite myvideo.mp4`
+* Access the board and execute the binary as `./efficientdet_demo -m <efficientdet_model_file> -i <input_video_file>`
+	* For example `./efficientdet_demo -m efficientdet-lite0.tflite -i myvideo.mp4`
+    * If you wish to select a different backend than CPU, provide also an optional `-b` argument from `["CPU", "NNAPI", "VX"]`
+    * If you want to use VX delegate, you also need to provide the path to the delegate via `-d` argument.
+    * Running the application with VX delegate is therefore done by executing the following: 
+    * `./efficientdet_demo -m <efficientdet_model_file> -i <input_video_file> -b VX -d <path_to_vx_delegate>`
 * After the application is done, you should find `out.avi` file in the current directory
