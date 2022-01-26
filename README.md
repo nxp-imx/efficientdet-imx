@@ -107,3 +107,5 @@ Repository contains a sample video to make running the sample application easier
 | File       | Source     | License     |
 | ----------- | ---------- | ----------- |
 | cars_short.mp4 | https://www.pexels.com/video/different-kinds-of-vehicles-on-the-freeway-2053100/ | Pexels License (Free to use)
+
+Additionally there are efficientdet-d0.tflite and efficientdet-d0-int8.tflite pretrained models available which were created using setup_tflite.py/sh scripts available for the user's convenience. They are trained on the COCO dataset (https://cocodataset.org/) which is licensed under Creative Commons Attribution 4.0 License (https://creativecommons.org/licenses/by/4.0/).

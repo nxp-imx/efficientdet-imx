@@ -1,5 +1,6 @@
 /*
-* Copyright 2021 NXP
+* Copyright 2022 NXP
+* SPDX-License-Identifier: Apache-2.0
 */
 
 #ifndef EFFICIENTDET_UTILS
