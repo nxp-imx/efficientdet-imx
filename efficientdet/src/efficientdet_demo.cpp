@@ -31,12 +31,24 @@ int main(int argc, char* argv[]) {
   ("m,model", "Path to EfficientDet model", cxxopts::value<std::string>()->default_value(""))
   ("i,input", "Path to input video file", cxxopts::value<std::string>()->default_value(""))
   ("b,backend", "Backend to use for inference (CPU, NNAPI, ...)", cxxopts::value<std::string>()->default_value("CPU"))
-  ("d,delegate", "Path to external delegate (ie. VX)", cxxopts::value<std::string>()->default_value(""));
+  ("d,delegate", "Path to external delegate (ie. VX)", cxxopts::value<std::string>()->default_value(""))
+  ("h,help", "Display help message");
 
   std::cout << "EfficientDet detection example" << std::endl;
   std::cout << "==============================" << std::endl;
 
   auto parsedOptions = appOptions.parse(argc, argv);
+
+  if(parsedOptions.count("help")){
+    std::cout << "A simple demo showcasing the use of EfficientDet model on an input file." << std::endl;
+    std::cout << "Please provide the following arguments:" << std::endl;
+    std::cout << "-m / --model    : Path to EfficientDet model" << std::endl;
+    std::cout << "-i / --input    : Path to input video file to be processed" << std::endl << std::endl;
+    std::cout << "OPTIONAL ARGUMENTS" << std::endl;
+    std::cout << "-b / --backend  : Specify which backend you wish to use (CPU, VX, NNAPI). Default is 'CPU'" << std::endl;
+    std::cout << "-d / --delegate : Only used when VX backend is chosen. Provide path to 'vx_delegate' shared library." << std::endl;
+    return 0;
+  }
 
   std::string modelFile    = parsedOptions["model"].as<std::string>();
   std::string videoFile    = parsedOptions["input"].as<std::string>();
@@ -45,6 +57,7 @@ int main(int argc, char* argv[]) {
   
   if(modelFile.empty() || videoFile.empty()){
     std::cout << "Please provide path to model (-m) and input file (-i) as command line arguments" << std::endl;
+    std::cout << "Alternatively, you can provide -h / --help argument to display help message." << std::endl;
     return 1;
   }
 
