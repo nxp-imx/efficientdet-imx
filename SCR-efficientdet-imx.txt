@@ -5,7 +5,7 @@ Package:                   efficientdet-imx
 Outgoing License:          Apache 2.0
 License File:              ./LICENSE.txt
 Type of content:           Source & binary
-Version:                   0.1
+Version:                   5.15.5_1.0.0
 
 Software Content Register
 -----------------------------------------------------
@@ -25,3 +25,17 @@ License:              MIT
 License File:         ./efficientdet/third-party/cxxopts/LICENSE
 Distribution Type:    Source
 Location:             ./efficientdet/third-party/cxxopts
+
+cars_short.mp4
+Sample video for testing the application.
+License:              Pexels License (Free to use)
+License File:         https://www.pexels.com/license
+Distribution Type:    Binary
+Location:             ./samples/cars_short.mp4
+
+*.tflite
+Pretrained EfficientDet models on the COCO dataset for testing the application.
+License:              Apache 2.0
+License File:         ./LICENSE.txt
+Distribution Type:    Binary
+Location:             ./efficientdet/models/*
