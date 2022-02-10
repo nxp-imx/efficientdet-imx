@@ -17,6 +17,16 @@
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/optional_debug_tools.h"
 
+bool endsWith(const std::string& str, const std::string& end){
+  // disallow equality, filename ".avi" does not make sense
+  if (end.length() >= str.length()){
+    return false;
+  }
+
+  return (str.substr(str.length() - end.length()).compare(end) == 0);
+
+}
+
 std::string toUpperCase(const std::string& str){
   std::string res;
 

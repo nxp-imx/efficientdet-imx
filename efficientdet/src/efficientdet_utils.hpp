@@ -15,6 +15,11 @@
 #include "tensorflow/lite/optional_debug_tools.h"
 
 /*
+	Check whether "str" string ends with a sequence "end"
+*/
+bool endsWith(const std::string& str, const std::string& end);
+
+/*
 	Converts a given string to uppercase format
 */
 std::string toUpperCase(const std::string& str);

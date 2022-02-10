@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
   std::string videoFile;
   std::string backend;
   std::string delegatePath;
+  std::string outputPath;
 
   try{  
     cxxopts::Options appOptions("EfficientDet detection example", "Example object detection using EfficientDet on an input video file.");
@@ -38,7 +39,8 @@ int main(int argc, char* argv[]) {
     ("i,input", "Path to input video file", cxxopts::value<std::string>()->default_value(""))
     ("b,backend", "Backend to use for inference (CPU, NNAPI, ...)", cxxopts::value<std::string>()->default_value("CPU"))
     ("d,delegate", "Path to external delegate (ie. VX)", cxxopts::value<std::string>()->default_value(""))
-    ("h,help", "Display help message");
+    ("h,help", "Display help message")
+    ("o,out", "Name of the output file", cxxopts::value<std::string>()->default_value("out.avi"));
 
     std::cout << "EfficientDet detection example" << std::endl;
     std::cout << "==============================" << std::endl;
@@ -60,11 +62,16 @@ int main(int argc, char* argv[]) {
     videoFile    = parsedOptions["input"].as<std::string>();
     backend      = parsedOptions["backend"].as<std::string>();
     delegatePath = parsedOptions["delegate"].as<std::string>();
+    outputPath   = parsedOptions["out"].as<std::string>();
   }
 
   catch(const cxxopts::OptionException& e){
     std::cout << "Error in parsing arguments: " << e.what() << std::endl;
     return 1;
+  }
+
+  if(!endsWith(outputPath, ".avi")){
+    outputPath = outputPath + ".avi";
   }
 
   if(modelFile.empty() || videoFile.empty()){
@@ -129,7 +136,7 @@ int main(int argc, char* argv[]) {
   // Prepare output file
   // Output file will have the same resolution as input file
   // Output format is avi because mp4 is not supported
-  cv::VideoWriter  out("out.avi",
+  cv::VideoWriter  out(outputPath,
                   cv::CAP_GSTREAMER,
                   cv::VideoWriter::fourcc('m', 'p', '4', 'v'),
                   cap.get(cv::CAP_PROP_FPS),
