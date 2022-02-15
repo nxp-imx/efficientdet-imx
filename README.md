@@ -44,12 +44,18 @@ Example video available for download from [Pexels](https://www.pexels.com/video/
         * Change the line to `converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]`
 
 * **Download and convert models to tflite.**
-   	* **Windows**: Use setup_tflite.py, for example `python3 setup_tflite.py d0`
-        * You can also specifiy quantization options, such as `python3 setup_tflite.py d0 INT8`
+   	* **Windows**: Use setup_tflite.py, for example `python3 setup_tflite.py --model d0`
+        * You can also specify other options
+            * Quantization: `python3 setup_tflite.py --model lite0 --quant INT8`
+            * Maximum number of bounding boxes: `python3 setup_tflite.py --model lite0 --max_detections <num_boxes>`
         * Please note that the application is designed to work with models with no optimizations or INT8 quantization. Using FP32 or FP16 quantized models requires different input data type.
-    * **Linux**  : Use setup_tflite.sh, for example `./setup_tflite.sh d0`
-        * You can specify quantization options, such as `./setup_tflite.sh d0 INT8`
+    * **Linux**  : Use setup_tflite.sh, for example `./setup_tflite.sh -m d0`
+        * You can also specify other options
+            * Quantization: `./setup_tflite.sh -m lite0 -q INT8`
+            * Maximum number of bounding boxes: `./setup_tflite.py -m lite0 -d <num_boxes>`
         * Please note that the application is designed to work with models with no optimizations or INT8 quantization. Using FP32 or FP16 quantized models requires different input data type.
+
+    * If you want to adjust `<score_thresh>` parameter, locate `/automl/efficientdet/hparams_config.py` file. Locate `nms_config` attribute of the Config class, and edit `score_thresh` to your desired value. 
 
 * A `.tflite` file will be created in `models/<model>` folder. Copy the `.tflite` file to i.MX8 board
     
@@ -98,7 +104,7 @@ You need to install OpenCV to successfully crosscompile EfficientDet demo.
     * If you want to use VX delegate, you also need to provide the path to the delegate via `-d` argument.
     * Running the application with VX delegate is therefore done by executing the following: 
     * `./efficientdet_demo -m <efficientdet_model_file> -i <input_video_file> -b VX -d <path_to_vx_delegate>`
-* After the application is done, you should find `out.avi` file in the current directory
+* After the application is done, you should find `out.avi` file in the current directory. You can adjust the name of the output file via `-o` optional argument, ie. `./efficientdet_demo -m <efficientdet_model_file> -i <input_video_file> -o different_output.avi`.
 
 ## Licenses
 
