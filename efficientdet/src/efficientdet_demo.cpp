@@ -15,7 +15,6 @@
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
-#include "tensorflow/lite/delegates/nnapi/nnapi_delegate.h"
 #include "tensorflow/lite/tools/delegates/delegate_provider.h"
 #include "tensorflow/lite/tools/evaluation/utils.h"
 #include "tensorflow/lite/delegates/external/external_delegate.h"
@@ -37,7 +36,7 @@ int main(int argc, char* argv[]) {
     appOptions.add_options()
     ("m,model", "Path to EfficientDet model", cxxopts::value<std::string>()->default_value(""))
     ("i,input", "Path to input video file", cxxopts::value<std::string>()->default_value(""))
-    ("b,backend", "Backend to use for inference (CPU, NNAPI, ...)", cxxopts::value<std::string>()->default_value("CPU"))
+    ("b,backend", "Backend to use for inference (CPU, VX)", cxxopts::value<std::string>()->default_value("CPU"))
     ("d,delegate", "Path to external delegate (ie. VX)", cxxopts::value<std::string>()->default_value(""))
     ("h,help", "Display help message")
     ("o,out", "Name of the output file", cxxopts::value<std::string>()->default_value("out.avi"));
@@ -53,7 +52,7 @@ int main(int argc, char* argv[]) {
       std::cout << "-m / --model    : Path to EfficientDet model" << std::endl;
       std::cout << "-i / --input    : Path to input video file to be processed" << std::endl << std::endl;
       std::cout << "OPTIONAL ARGUMENTS" << std::endl;
-      std::cout << "-b / --backend  : Specify which backend you wish to use (CPU, VX, NNAPI). Default is 'CPU'" << std::endl;
+      std::cout << "-b / --backend  : Specify which backend you wish to use (CPU, VX). Default is 'CPU'" << std::endl;
       std::cout << "-d / --delegate : Only used when VX backend is chosen. Provide path to 'vx_delegate' shared library." << std::endl;
       return 0;
     }
@@ -169,23 +168,7 @@ int main(int argc, char* argv[]) {
   TfLiteExternalDelegateOptions  ext_delegate_option;
   TfLiteDelegate*                ext_delegate_ptr;
 
-  if (toUpperCase(backend) == std::string("NNAPI")){
-    tflite::StatefulNnApiDelegate::Options options;
-    auto delegate = tflite::evaluation::CreateNNAPIDelegate(options);
-    if (!delegate) {
-      std::cout << "NNAPI acceleration is unsupported on this platform." << std::endl;
-    } else {
-      std::cout << "Use NNAPI acceleration." << std::endl;
-    }
-
-    if (interpreter->ModifyGraphWithDelegate(std::move(delegate)) !=
-        kTfLiteOk) {
-      std::cout << "Failed to apply NNAPI delegate." << std::endl;
-      return 1;
-    }
-  }
-
-  else if(toUpperCase(backend) == std::string("VX")){
+  if(toUpperCase(backend) == std::string("VX")){
     ext_delegate_option = TfLiteExternalDelegateOptionsDefault(delegatePath.c_str());
     ext_delegate_ptr = TfLiteExternalDelegateCreate(&ext_delegate_option);
     if(!ext_delegate_ptr){

@@ -1,6 +1,4 @@
-INC=-I/home/fapannen/Desktop/git/tensorflow \
-	-I/home/fapannen/Desktop/git/tensorflow/tensorflow/lite/tools/make/downloads/flatbuffers/include \
-	-I../third-party/cxxopts
+INC=-I../third-party/cxxopts
 
 LIBS=-ltensorflow-lite \
 	-lstdc++ \
@@ -23,10 +21,6 @@ LIBS=-ltensorflow-lite \
 	-lopencv_video
 
 BIN=efficientdet_demo
-
-EXT=../../../tensorflow/tensorflow/lite/nnapi/nnapi_implementation.cc
-
-LDOPTS:=-L./libs
 
 UTILS=efficientdet_utils
 
