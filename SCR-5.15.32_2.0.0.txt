@@ -1,0 +1,51 @@
+-----------------------------------------------------
+NXP Software Content Register
+
+Package:                   efficientdet-imx
+Outgoing License:          Apache 2.0
+License File:              ./LICENSE.txt
+Type of content:           Source & binary
+Version:                   5.15.32_2.0.0
+Release Location:          https://github.com/NXP/efficientdet-imx
+Origin:                    NXP (Apache 2.0)
+                           automl (Apache 2.0) - https://github.com/google/automl
+                           cxxopts (MIT) - https://github.com/jarro2783/cxxopts
+                           cars_short.mp4 (Pexels License) - https://www.pexels.com/video/different-kinds-of-vehicles-on-the-freeway-2053100/
+
+-----------------------------------------------------
+
+Component:            automl
+Description:          Efficientdet and efficientnet models from Google Brain.
+Version:              1.2
+License:              Apache 2.0
+License File:         ./automl/LICENSE
+Distribution Type:    Source
+Location:             ./automl/*
+
+-----------------------------------------------------
+
+Component:            cxxopts
+Description:          Lightweight C++ option parser library, supporting the standard GNU style syntax for options.
+Version:              3.0.0
+License:              MIT
+License File:         ./efficientdet/third-party/cxxopts/LICENSE
+Distribution Type:    Source
+Location:             ./efficientdet/third-party/cxxopts/*
+
+-----------------------------------------------------
+
+Component:            Sample video (cars_short.mp4)
+Description:          Sample video for testing the application.
+License:              Pexels License (Free to use)
+License File:         ./samples/LICENSE-Pexels.txt
+Distribution Type:    Binary
+Location:             ./samples/cars_short.mp4
+
+-----------------------------------------------------
+
+Component:            Pretrained EfficientDet Models (*.tflite)
+Description:          Pretrained EfficientDet models on the COCO dataset for testing the application.
+License:              Apache 2.0
+License File:         ./LICENSE.txt
+Distribution Type:    Binary
+Location:             ./efficientdet/models/*
